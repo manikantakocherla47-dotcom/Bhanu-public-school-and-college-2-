@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bhanu Public School - Student & Fee ERP</title>
+    <!-- Tailwind CSS CDN for modern responsive styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 pb-24">
+
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-indigo-900 to-indigo-800 text-white p-4 shadow-md sticky top-0 z-50 flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+            <div class="w-11 h-11 bg-slate-900 border-2 border-amber-400 rounded-full flex flex-col items-center justify-center font-extrabold text-xs text-amber-400 shadow-inner flex-shrink-0">
+                BPS
+            </div>
+            <div>
+                <h1 class="text-base font-extrabold tracking-tight">BHANU PUBLIC SCHOOL</h1>
+                <p class="text-[11px] text-indigo-200">Gadala, Rajahmundry • Student & Fee ERP</p>
+            </div>
+        </div>
+        <button onclick="showInstallHelp()" class="bg-amber-400 hover:bg-amber-500 text-slate-900 px-3 py-1.5 rounded-lg font-bold text-xs shadow transition-transform active:scale-95 flex items-center gap-1 flex-shrink-0">
+            📱 Install App
+        </button>
+    </header>
+
+    <main class="max-w-xl mx-auto p-4">
+        
+        <!-- VIEW 1: SEARCH & LIST -->
+        <section id="view-search" class="view-section">
+            <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 mb-4">
+                <h2 class="text-base font-bold text-indigo-900 flex items-center gap-1.5 mb-1">
+                    🔍 Search Student Details & Fee Status
+                </h2>
+                <p class="text-xs text-slate-500 mb-3">Type Student Name, Roll No, or Mobile Number to get full details instantly</p>
+                <input type="text" id="searchInput" oninput="filterStudents()" placeholder="Enter Student Name (e.g., Sai Charan)" 
+                    class="w-full px-4 py-3 border-2 border-blue-200 focus:border-indigo-700 rounded-xl text-sm outline-none transition-all shadow-inner">
+            </div>
+
+            <!-- Stats Overview -->
+            <div class="grid grid-cols-3 gap-3 mb-4">
+                <div class="bg-white p-3 rounded-2xl text-center shadow-sm border border-slate-100">
+                    <div id="statTotal" class="text-lg font-black text-indigo-900">0</div>
+                    <div class="text-[11px] font-semibold text-slate-500 mt-0.5">Total Students</div>
+                </div>
+                <div class="bg-white p-3 rounded-2xl text-center shadow-sm border border-slate-100">
+                    <div id="statCollected" class="text-lg font-black text-emerald-600">₹0</div>
+                    <div class="text-[11px] font-semibold text-slate-500 mt-0.5">Fee Collected</div>
+                </div>
+                <div class="bg-white p-3 rounded-2xl text-center shadow-sm border border-slate-100">
+                    <div id="statDue" class="text-lg font-black text-rose-600">₹0</div>
+                    <div class="text-[11px] font-semibold text-slate-500 mt-0.5">Balance Due</div>
+                </div>
+            </div>
+
+            <!-- Student Cards Container -->
+            <div id="studentContainer" class="space-y-4">
+                <!-- Dynamically populated -->
+            </div>
+        </section>
+
+        <!-- VIEW 2: ADD STUDENT -->
+        <section id="view-add" class="view-section hidden">
+            <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
+                <h2 class="text-base font-bold text-indigo-900 mb-1">➕ Add New Student Record</h2>
+                <p class="text-xs text-slate-500 mb-4">Enter complete student information and fee breakdown</p>
+                
+                <form onsubmit="handleAddNewStudent(event)" class="space-y-3.5">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Student Full Name *</label>
+                        <input type="text" id="addName" required placeholder="e.g., K. Sai Charan" class="w-full p-3 border border-slate-300 rounded-xl text-sm focus:border-indigo-800 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Class & Section *</label>
+                        <input type="text" id="addClass" required placeholder="e.g., 10th Class" class="w-full p-3 border border-slate-300 rounded-xl text-sm focus:border-indigo-800 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Roll Number / Admission No *</label>
+                        <input type="text" id="addRoll" required placeholder="e.g., BPS-1006" class="w-full p-3 border border-slate-300 rounded-xl text-sm focus:border-indigo-800 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Parent Name *</label>
+                        <input type="text" id="addParent" required placeholder="e.g., K. Srinivas Rao" class="w-full p-3 border border-slate-300 rounded-xl text-sm focus:border-indigo-800 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Mobile Number *</label>
+                        <input type="tel" id="addMobile" required placeholder="e.g., 9849800385" class="w-full p-3 border border-slate-300 rounded-xl text-sm focus:border-indigo-800 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Address *</label>
+                        <input type="text" id="addAddress" required placeholder="e.g., Near Gadala School, Rajahmundry" class="w-full p-3 border border-slate-300 rounded-xl text-sm focus:border-indigo-800 outline-none">
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Total Fee (₹) *</label>
+                            <input type="number" id="addTotalFee" required placeholder="28000" class="w-full p-3 border border-slate-300 rounded-xl text-sm focus:border-indigo-800 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Paid Amount (₹) *</label>
+                            <input type="number" id="addPaidFee" required placeholder="20000" class="w-full p-3 border border-slate-300 rounded-xl text-sm focus:border-indigo-800 outline-none">
+                        </div>
+                    </div>
+                    <button type="submit" class="w-full bg-indigo-900 hover:bg-indigo-800 text-white font-bold py-3.5 rounded-xl text-sm shadow-md transition-all active:scale-[0.99] mt-2">
+                        Save Student Record
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- VIEW 3: ADMIN & EXPORT -->
+        <section id="view-admin" class="view-section hidden">
+            <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 space-y-4">
+                <h2 class="text-base font-bold text-indigo-900">⚙️ Admin Control & Backup</h2>
+                <p class="text-xs text-slate-500">Easily export your student database or reset records whenever needed.</p>
+                
+                <button onclick="exportToCSV()" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-3.5 rounded-xl text-sm shadow flex items-center justify-center gap-2">
+                    📥 Download Excel / CSV Report
+                </button>
+                <button onclick="exportJSONBackup()" class="w-full bg-sky-600 hover:bg-sky-700 text-white font-bold py-3.5 rounded-xl text-sm shadow flex items-center justify-center gap-2">
+                    💾 Backup Data (JSON)
+                </button>
+                <button onclick="resetDefaultData()" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-bold py-3.5 rounded-xl text-sm shadow flex items-center justify-center gap-2">
+                    🔄 Reset Sample Records
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Bottom Navigation Bar -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 py-2.5 px-6 flex justify-around shadow-lg z-50">
+        <button onclick="switchTab('search', this)" class="nav-btn flex flex-col items-center text-indigo-900 font-bold text-xs gap-1 transition-all">
+            <span class="text-lg">🔍</span>
+            <span>Search Student</span>
+        </button>
+        <button onclick="switchTab('add', this)" class="nav-btn flex flex-col items-center text-slate-400 font-semibold text-xs gap-1 transition-all">
+            <span class="text-lg">➕</span>
+            <span>Add Data</span>
+        </button>
+        <button onclick="switchTab('admin', this)" class="nav-btn flex flex-col items-center text-slate-400 font-semibold text-xs gap-1 transition-all">
+            <span class="text-lg">⚙️</span>
+            <span>Admin & Export</span>
+        </button>
+    </nav>
+
+    <!-- Pay / Edit Modal -->
+    <div id="payModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs hidden items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-2xl p-5 w-full max-w-sm shadow-xl">
+            <h3 id="modalTitle" class="text-base font-bold text-indigo-900 mb-3">Update Fee Record</h3>
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Total Fee (₹)</label>
+                    <input type="number" id="modalTotalFee" class="w-full p-3 border border-slate-300 rounded-xl text-sm outline-none focus:border-indigo-900">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Total Paid Amount (₹)</label>
+                    <input type="number" id="modalPaidFee" class="w-full p-3 border border-slate-300 rounded-xl text-sm outline-none focus:border-indigo-900">
+                </div>
+            </div>
+            <div class="flex gap-3 mt-5">
+                <button onclick="closePayModal()" class="flex-1 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-3 rounded-xl text-sm">Cancel</button>
+                <button onclick="saveFeeUpdate()" class="flex-1 bg-indigo-900 hover:bg-indigo-800 text-white font-bold py-3 rounded-xl text-sm">Update</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Notification Box (Replacing alert) -->
+    <div id="customToast" class="fixed top-5 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-5 py-3 rounded-xl shadow-2xl text-xs font-semibold hidden z-50 transition-all">
+        Notification message here
+    </div>
+
+    <script>
+        // Initial Sample Data matching Bhanu Public School records
+        const defaultStudents = [
+            {
+                id: 1,
+                name: "K. Sai Charan",
+                studentClass: "10th Class",
+                rollNo: "BPS-1001",
+                parentName: "K. Srinivas Rao",
+                mobile: "9849800385",
+                address: "Near Gadala School, Gadala, Rajahmundry",
+                totalFee: 28000,
+                paidFee: 20000
+            },
+            {
+                id: 2,
+                name: "M. Naga Lakshmi",
+                studentClass: "9th Class",
+                rollNo: "BPS-1002",
+                parentName: "M. Venkata Ramana",
+                mobile: "9440123456",
+                address: "Main Road, Gadala, Rajahmundry",
+                totalFee: 25000,
+                paidFee: 25000
+            },
+            {
+                id: 3,
+                name: "P. Karthik",
+                studentClass: "8th Class",
+                rollNo: "BPS-1003",
+                parentName: "P. Suresh Babu",
+                mobile: "9848054321",
+                address: "Bommuru, Rajahmundry",
+                totalFee: 22000,
+                paidFee: 15000
+            },
+            {
+                id: 4,
+                name: "G. Deepika",
+                studentClass: "10th Class",
+                rollNo: "BPS-1004",
+                parentName: "G. Satyanarayana",
+                mobile: "9989112233",
+                address: "Lalacheruvu, Rajahmundry",
+                totalFee: 28000,
+                paidFee: 18000
+            },
+            {
+                id: 5,
+                name: "T. Harsha Vardhan",
+                studentClass: "7th Class",
+                rollNo: "BPS-1005",
+                parentName: "T. Ramesh",
+                mobile: "9701223344",
+                address: "Gadala Center, Rajahmundry",
+                totalFee: 16500,
+                paidFee: 11500
+            }
+        ];
+
+        let students = JSON.parse(localStorage.getItem('bps_erp_db')) || defaultStudents;
+        let activeEditId = null;
+
+        function saveStorage() {
+            localStorage.setItem('bps_erp_db', JSON.stringify(students));
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('customToast');
+            toast.innerText = msg;
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3000);
+        }
+
+        function filterStudents() {
+            renderStudents();
+        }
+
+        function renderStudents() {
+            const query = document.getElementById('searchInput').value.toLowerCase().trim();
+            const container = document.getElementById('studentContainer');
+            container.innerHTML = '';
+
+            let totalCol = 0;
+            let totalBal = 0;
+
+            students.forEach(s => {
+                totalCol += Number(s.paidFee);
+                totalBal += Math.max(0, Number(s.totalFee) - Number(s.paidFee));
+            });
+
+            document.getElementById('statTotal').innerText = students.length;
+            document.getElementById('statCollected').innerText = '₹' + totalCol.toLocaleString('en-IN');
+            document.getElementById('statDue').innerText = '₹' + totalBal.toLocaleString('en-IN');
+
+            const filtered = students.filter(s =>
+                s.name.toLowerCase().includes(query) ||
+                s.rollNo.toLowerCase().includes(query) ||
+                s.mobile.includes(query) ||
+                s.parentName.toLowerCase().includes(query)
+            );
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="bg-white rounded-2xl p-6 text-center text-slate-400 border border-slate-100 text-sm">
+                        No matching student records found.
+                    </div>
+                `;
+                return;
+            }
+
+            filtered.forEach(s => {
+                const due = Math.max(0, Number(s.totalFee) - Number(s.paidFee));
+                const badge = due > 0
+                    ? `<span class="bg-rose-50 text-rose-600 text-xs font-bold px-3 py-1 rounded-full">Due: ₹${due.toLocaleString('en-IN')}</span>`
+                    : `<span class="bg-emerald-50 text-emerald-600 text-xs font-bold px-3 py-1 rounded-full">Paid Full</span>`;
+
+                const waText = encodeURIComponent(
+                    `*BHANU PUBLIC SCHOOL, GADALA*\nStudent: ${s.name} (${s.studentClass})\nRoll No: ${s.rollNo}\nTotal Fee: ₹${s.totalFee}\nPaid Amount: ₹${s.paidFee}\nBalance Due: ₹${due}`
+                );
+
+                const card = document.createElement('div');
+                card.className = 'bg-white rounded-2xl p-4 shadow-sm border border-slate-100 border-l-4 border-l-indigo-900';
+                card.innerHTML = `
+                    <div class="flex justify-between items-start mb-3">
+                        <div>
+                            <h3 class="text-base font-bold text-slate-900">${s.name}</h3>
+                            <p class="text-xs text-slate-500">${s.studentClass} • Roll No: <span class="font-semibold text-slate-700">${s.rollNo}</span></p>
+                        </div>
+                        ${badge}
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2 bg-slate-50 p-2.5 rounded-xl text-xs mb-3">
+                        <div>
+                            <span class="block text-[10px] font-bold text-slate-400 uppercase">Parent Name</span>
+                            <span class="font-semibold text-slate-800">${s.parentName}</span>
+                        </div>
+                        <div>
+                            <span class="block text-[10px] font-bold text-slate-400 uppercase">Mobile Number</span>
+                            <span class="font-semibold text-slate-800">${s.mobile}</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-50 p-2.5 rounded-xl text-xs mb-3">
+                        <span class="block text-[10px] font-bold text-slate-400 uppercase">Address</span>
+                        <span class="font-semibold text-slate-800">${s.address}</span>
+                    </div>
+
+                    <div class="grid grid-cols-3 border border-slate-200 rounded-xl overflow-hidden text-center mb-3 text-xs">
+                        <div class="p-2 border-r border-slate-200 bg-slate-50/50">
+                            <div class="text-[10px] font-bold text-slate-400">TOTAL FEE</div>
+                            <div class="font-extrabold text-slate-900 mt-0.5">₹${Number(s.totalFee).toLocaleString('en-IN')}</div>
+                        </div>
+                        <div class="p-2 border-r border-slate-200 bg-slate-50/50">
+                            <div class="text-[10px] font-bold text-slate-400">PAID</div>
+                            <div class="font-extrabold text-emerald-600 mt-0.5">₹${Number(s.paidFee).toLocaleString('en-IN')}</div>
+                        </div>
+                        <div class="p-2 bg-slate-50/50">
+                            <div class="text-[10px] font-bold text-slate-400">BALANCE</div>
+                            <div class="font-extrabold ${due > 0 ? 'text-rose-600' : 'text-emerald-600'} mt-0.5">₹${due.toLocaleString('en-IN')}</div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-2">
+                        <a href="tel:${s.mobile}" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-900 py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-1 transition">
+                            📞 Call
+                        </a>
+                        <a href="https://wa.me/91${s.mobile}?text=${waText}" target="_blank" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-1 transition">
+                            💬 WhatsApp
+                        </a>
+                        <button onclick="openPayModal(${s.id})" class="bg-amber-50 hover:bg-amber-100 text-amber-800 py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-1 transition">
+                            💳 Pay / Edit
+                        </button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function handleAddNewStudent(e) {
+            e.preventDefault();
+            const newStudent = {
+                id: Date.now(),
+                name: document.getElementById('addName').value.trim(),
+                studentClass: document.getElementById('addClass').value.trim(),
+                rollNo: document.getElementById('addRoll').value.trim(),
+                parentName: document.getElementById('addParent').value.trim(),
+                mobile: document.getElementById('addMobile').value.trim(),
+                address: document.getElementById('addAddress').value.trim(),
+                totalFee: Number(document.getElementById('addTotalFee').value),
+                paidFee: Number(document.getElementById('addPaidFee').value)
+            };
+            students.unshift(newStudent);
+            saveStorage();
+            e.target.reset();
+            showToast('Student added successfully!');
+            switchTab('search', document.querySelectorAll('.nav-btn')[0]);
+            renderStudents();
+        }
+
+        function openPayModal(id) {
+            const s = students.find(x => x.id === id);
+            if (!s) return;
+            activeEditId = id;
+            document.getElementById('modalTitle').innerText = `Update: ${s.name} (${s.rollNo})`;
+            document.getElementById('modalTotalFee').value = s.totalFee;
+            document.getElementById('modalPaidFee').value = s.paidFee;
+            document.getElementById('payModal').classList.remove('hidden');
+            document.getElementById('payModal').classList.add('flex');
+        }
+
+        function closePayModal() {
+            document.getElementById('payModal').classList.remove('flex');
+            document.getElementById('payModal').classList.add('hidden');
+            activeEditId = null;
+        }
+
+        function saveFeeUpdate() {
+            const s = students.find(x => x.id === activeEditId);
+            if (s) {
+                s.totalFee = Number(document.getElementById('modalTotalFee').value);
+                s.paidFee = Number(document.getElementById('modalPaidFee').value);
+                saveStorage();
+                renderStudents();
+                showToast('Fee details updated successfully!');
+            }
+            closePayModal();
+        }
+
+        function switchTab(tabKey, btnEl) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
+            document.getElementById('view-' + tabKey).classList.remove('hidden');
+
+            document.querySelectorAll('.nav-btn').forEach(b => {
+                b.classList.remove('text-indigo-900', 'font-bold');
+                b.classList.add('text-slate-400', 'font-semibold');
+            });
+            btnEl.classList.remove('text-slate-400', 'font-semibold');
+            btnEl.classList.add('text-indigo-900', 'font-bold');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function exportToCSV() {
+            let csv = 'Roll No,Student Name,Class,Parent Name,Mobile,Address,Total Fee,Paid Fee,Balance Due\n';
+            students.forEach(s => {
+                const due = Math.max(0, s.totalFee - s.paidFee);
+                csv += `"${s.rollNo}","${s.name}","${s.studentClass}","${s.parentName}","${s.mobile}","${s.address}",${s.totalFee},${s.paidFee},${due}\n`;
+            });
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'Bhanu_Public_School_Fee_Report.csv';
+            a.click();
+            showToast('CSV Report downloaded successfully!');
+        }
+
+        function exportJSONBackup() {
+            const blob = new Blob([JSON.stringify(students, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'BPS_ERP_Backup.json';
+            a.click();
+            showToast('JSON Backup downloaded successfully!');
+        }
+
+        function resetDefaultData() {
+            if (confirm('Are you sure you want to reset all data to default sample records?')) {
+                students = [...defaultStudents];
+                saveStorage();
+                renderStudents();
+                showToast('Reset to default sample records!');
+            }
+        }
+
+        function showInstallHelp() {
+            alert(
+                "Bhanu Public School App ఇన్‌స్టాల్ విధానం:\n\n" +
+                "1. ఈ HTML ఫైల్‌ను మీ ఫోన్ బ్రౌజర్‌లో ఓపెన్ చేయండి.\n" +
+                "2. బ్రౌజర్ కుడివైపు పైన ఉన్న మూడు చుక్కలపై (⋮) నొక్కి 'Add to Home screen' లేదా 'Install app' సెలెక్ట్ చేయండి.\n" +
+                "3. మీ హోమ్ స్క్రీన్‌పై యాప్ సిద్ధంగా ఉంటుంది!"
+            );
+        }
+
+        // Initial render on load
+        renderStudents();
+    </script>
+</body>
+</html>
